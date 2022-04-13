@@ -5,18 +5,12 @@
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
     @foreach ($menus as $menu )
-      @if ($menu['menu_id']==0)
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">{{$menu['name']}}</a>
-      </li>
-      @endif
-    @endforeach
-    <!-- <li class="nav-item d-none d-sm-inline-block">
-      <a href="index3.html" class="nav-link">首頁</a>
-    </li>
+    @if ($menu['menu_id']==0)
     <li class="nav-item d-none d-sm-inline-block">
-      <a href="#" class="nav-link">Contact</a>
-    </li> -->
+      <a href="" class="nav-link">{{$menu['name']}}</a>
+    </li>
+    @endif
+    @endforeach
   </ul>
 
   <!-- Right navbar links -->
@@ -107,14 +101,14 @@
       </div>
     </li>
     <li class="nav-item">
-    <form class="mb-0" method="POST" action="{{ route('logout') }}">
+      <form class="mb-0" method="POST" action="{{ route('logout') }}">
         @csrf
-        <a class="nav-link d-flex align-items-center" href="{{ route('logout') }}" onclick="event.preventDefault();this.closest('form').submit();">
+        <a class="nav-link d-flex align-items-center" href="{{ route('logout') }}"
+          onclick="event.preventDefault();this.closest('form').submit();">
           <i class="fas fa-sign-out-alt"></i>
         </a>
-    </form>
+      </form>
     </li>
   </ul>
 </nav>
 <!-- /.navbar -->
-

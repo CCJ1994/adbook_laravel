@@ -23,5 +23,11 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::resource('/dashboard', MenuController::class);
+Route::get('/dashboard', [MenuController::class, 'index']);
+Route::get('/dashboard/{page}', [MenuController::class, 'show']);
+// Route::view('/dashboard/cust_list', 'page.cust_list');
 
+// Route::get('/dashboard/{page}', function ($page) {
+//     return view('page.'.$page);
+// });
+// Route::resource('dashboard', MenuController::class);
