@@ -114,6 +114,7 @@ class MenuController extends Controller
         foreach ($menus as $key => $menu) {
           if($menu['url']==$page){
               $menuAry['idad_menu']=$menu['menu_id'];
+              $menuAry['name']=$menu['name'];
           }
         }
       }else{

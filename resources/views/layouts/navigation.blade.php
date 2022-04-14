@@ -7,6 +7,7 @@
     @foreach ($menus['allMenu'] as $menu )
     @if ($menu['menu_id']==0)
     <li class="nav-item d-none d-sm-inline-block">
+
       <a href="" class="nav-link">{{$menu['name']}}</a>
     </li>
     @endif
@@ -142,6 +143,7 @@
         @if ($mainMenu['idad_menu']==$menus['idad_menu'])
         <li class="nav-item menu-open">
           <a href="" class="nav-link active">
+          <i class="nav-icon fas fa-dot-circle"></i>
             <p>
               {{ $mainMenu['name'] }}
               <i class="right fas fa-angle-left"></i>
@@ -172,6 +174,7 @@
         @else
         <li class="nav-item">
           <a href="" class="nav-link">
+          <i class="nav-icon fas fa-dot-circle"></i>
             <p>
               {{ $mainMenu['name'] }}
               <i class="right fas fa-angle-left"></i>
@@ -205,6 +208,7 @@
         @if ( $menus['url']=='home' )
         <li class="nav-item menu-open">
           <a href="{{ url('dashboard') }}" class="nav-link active">
+          <i class="nav-icon fas fa-home"></i>
             <p>
               {{$mainMenu['name']}}
             </p>
@@ -213,6 +217,7 @@
         @else
         <li class="nav-item">
           <a href="{{ url('dashboard') }}" class="nav-link">
+          <i class="nav-icon fas fa-home"></i>
             <p>
               {{$mainMenu['name']}}
             </p>

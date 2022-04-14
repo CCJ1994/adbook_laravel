@@ -5,13 +5,7 @@
     <div class="container-fluid">
       <div class="mb-2 row">
         <div class="col-sm-6">
-          <h1 class="m-0">Starter Page</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">{{ $menus['url'] }}</a></li>
-            <li class="breadcrumb-item active">Starter Page</li>
-          </ol>
+          <h1 class="m-0">{{ $menus['name'] }}</h1>
         </div><!-- /.col -->
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
