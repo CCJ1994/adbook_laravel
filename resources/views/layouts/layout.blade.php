@@ -1,5 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
-
 <html>
 
 <head>
@@ -19,8 +17,8 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
-    @section('sidebar')
-    @include('layouts.navigation')
+      @section('sidebar')
+      @include('layouts.navigation')
     <!-- This is the master sidebar. -->
     @show
 

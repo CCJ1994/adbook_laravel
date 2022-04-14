@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::get('/dashboard', [MenuController::class, 'index']);
-Route::get('/dashboard/{page}', [MenuController::class, 'show']);
+Route::get('/dashboard/{page}', [MenuController::class, 'getMenu'])->name('dashboard.getMenu');
 // Route::view('/dashboard/cust_list', 'page.cust_list');
 
 // Route::get('/dashboard/{page}', function ($page) {
