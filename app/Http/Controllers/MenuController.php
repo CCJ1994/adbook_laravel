@@ -16,9 +16,9 @@ class MenuController extends Controller
     {
         $menus=Ad_menu::get()->toArray();
         $menuAry['url']='home';
-        $menuAry['name']='首頁';
+        $menuAry['name']='公告';
         $menuAry['allMenu']=$menus;
-        $menuAry['idad_menu']='1';
+        $menuAry['menu_id']='0';
         return view('dashboard')->with('menus',$menuAry);
     }
 
@@ -109,11 +109,11 @@ class MenuController extends Controller
       $menuAry['name']="";
       $menuAry['url']=$page;
       $menuAry['allMenu']=$menus;
-      $menuAry['idad_menu']="";
+      $menuAry['menu_id']="";
       if(!empty($page)){
         foreach ($menus as $key => $menu) {
           if($menu['url']==$page){
-              $menuAry['idad_menu']=$menu['menu_id'];
+              $menuAry['menu_id']=$menu['menu_id'];
               $menuAry['name']=$menu['name'];
           }
         }

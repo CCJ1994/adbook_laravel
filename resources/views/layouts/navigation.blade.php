@@ -6,74 +6,44 @@
     </li>
     @foreach ($menus['allMenu'] as $menu )
     @if ($menu['menu_id']==0)
-    <li class="nav-item d-none d-sm-inline-block">
+    @if ( $menu['idad_menu'] != 1)
+    <li class="nav-item d-none d-sm-inline-block dropdown dropdown-hover">
+      @if ( $menu['idad_menu'] == $menus['menu_id'])
 
-      <a href="" class="nav-link">{{$menu['name']}}</a>
+      <a class="nav-link active" data-toggle="dropdown">{{$menu['name']}}</a>
+      @else
+      <a class="nav-link" data-toggle="dropdown">{{$menu['name']}}</a>
+      @endif
+      <ul class="dropdown-menu border-0 shadow">
+        @foreach ( $menus['allMenu'] as $subMenu)
+        @if ( $subMenu['menu_id'] == $menu['idad_menu'])
+        <li>
+          <a href="{{ route('dashboard.getMenu',['page'=> $subMenu['url'] ]) }}"
+            class="dropdown-item">{{$subMenu['name']}}</a>
+        </li>
+        @endif
+        @endforeach
+      </ul>
     </li>
+    @else
+    @if ( $menus['menu_id']==0)
+    <li class="nav-item d-none d-sm-inline-block active">
+      <a href=" {{ route('dashboard.index') }}" class="nav-link">{{$menu['name']}}</a>
+    </li>
+    @else
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href=" {{ route('dashboard.index') }}" class="nav-link">{{$menu['name']}}</a>
+    </li>
+    @endif
+
+    @endif
+
     @endif
     @endforeach
   </ul>
 
   <!-- Right navbar links -->
   <ul class="ml-auto navbar-nav">
-    <!-- Messages Dropdown Menu -->
-    <li class="nav-item dropdown">
-      <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#">
-        <i class="far fa-comments"></i>
-        <span class="badge badge-danger navbar-badge">3</span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-        <a href="#" class="dropdown-item">
-          <!-- Message Start -->
-          <div class="media">
-            <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="mr-3 img-size-50 img-circle">
-            <div class="media-body">
-              <h3 class="dropdown-item-title">
-                Brad Diesel
-                <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-              </h3>
-              <p class="text-sm">Call me whenever you can...</p>
-              <p class="text-sm text-muted"><i class="mr-1 far fa-clock"></i> 4 Hours Ago</p>
-            </div>
-          </div>
-          <!-- Message End -->
-        </a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">
-          <!-- Message Start -->
-          <div class="media">
-            <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="mr-3 img-size-50 img-circle">
-            <div class="media-body">
-              <h3 class="dropdown-item-title">
-                John Pierce
-                <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-              </h3>
-              <p class="text-sm">I got your message bro</p>
-              <p class="text-sm text-muted"><i class="mr-1 far fa-clock"></i> 4 Hours Ago</p>
-            </div>
-          </div>
-          <!-- Message End -->
-        </a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">
-          <!-- Message Start -->
-          <div class="media">
-            <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="mr-3 img-size-50 img-circle">
-            <div class="media-body">
-              <h3 class="dropdown-item-title">
-                Nora Silvester
-                <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-              </h3>
-              <p class="text-sm">The subject goes here</p>
-              <p class="text-sm text-muted"><i class="mr-1 far fa-clock"></i> 4 Hours Ago</p>
-            </div>
-          </div>
-          <!-- Message End -->
-        </a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-      </div>
-    </li>
     <!-- Notifications Dropdown Menu -->
     <li class="nav-item dropdown">
       <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#">
@@ -100,6 +70,18 @@
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
       </div>
+    </li>
+
+    <!-- Setting Dropdown Menu -->
+    <li class="nav-item dropdown">
+      <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#">
+        <i class="fas fa-cog"></i>
+      </a>
+      <ul class="dropdown-menu border-0 shadow">
+        <li><a href="#" class="dropdown-item">公告內容 </a></li>
+        <li><a href="#" class="dropdown-item">使用者維護</a></li>
+        <li><a href="#" class="dropdown-item">權限設定</a></li>
+      </ul>
     </li>
     <li class="nav-item">
       <form class="mb-0" method="POST" action="{{ route('logout') }}">
@@ -140,10 +122,10 @@
                with font-awesome or any other icon font library -->
         @foreach ( $menus['allMenu'] as $key => $mainMenu)
         @if ($mainMenu['menu_id']==0 && $mainMenu['idad_menu']!=1)
-        @if ($mainMenu['idad_menu']==$menus['idad_menu'])
+        @if ($mainMenu['idad_menu']==$menus['menu_id'])
         <li class="nav-item menu-open">
-          <a href="" class="nav-link active">
-          <i class="nav-icon fas fa-dot-circle"></i>
+          <a class="nav-link active">
+            <i class="nav-icon fas fa-dot-circle"></i>
             <p>
               {{ $mainMenu['name'] }}
               <i class="right fas fa-angle-left"></i>
@@ -173,8 +155,8 @@
         </li>
         @else
         <li class="nav-item">
-          <a href="" class="nav-link">
-          <i class="nav-icon fas fa-dot-circle"></i>
+          <a class="nav-link">
+            <i class="nav-icon fas fa-dot-circle"></i>
             <p>
               {{ $mainMenu['name'] }}
               <i class="right fas fa-angle-left"></i>
@@ -208,7 +190,7 @@
         @if ( $menus['url']=='home' )
         <li class="nav-item menu-open">
           <a href="{{ url('dashboard') }}" class="nav-link active">
-          <i class="nav-icon fas fa-home"></i>
+            <i class="nav-icon fas fa-home"></i>
             <p>
               {{$mainMenu['name']}}
             </p>
@@ -217,7 +199,7 @@
         @else
         <li class="nav-item">
           <a href="{{ url('dashboard') }}" class="nav-link">
-          <i class="nav-icon fas fa-home"></i>
+            <i class="nav-icon fas fa-home"></i>
             <p>
               {{$mainMenu['name']}}
             </p>
