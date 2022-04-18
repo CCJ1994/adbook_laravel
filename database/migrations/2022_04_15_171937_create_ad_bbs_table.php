@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdMenusTable extends Migration
+class CreateAdBbsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateAdMenusTable extends Migration
      */
     public function up()
     {
-        Schema::create('ad_menus', function (Blueprint $table) {
+        Schema::create('ad_bbs', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
-            $table->id('idad_menu');
-            $table->integer('menu_id')->unsigned()->default(0)->comment('主選單為0／子選單為母選單的idad_menu');
+            $table->id('idad_bb');
+            $table->string('topic')->comment('主題');
+            $table->text('content')->comment('內容');
+            $table->date('msg_date');
+            $table->string('modify_by');
+            $table->datetime('modify_time');
             $table->integer('status')->unsigned()->default(1)->comment('顯示1不顯示0');
-            $table->integer('rank')->unsigned()->comment('順序');
-            $table->string('name');
-            // $table->timestamps();
         });
     }
 
@@ -32,6 +33,6 @@ class CreateAdMenusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ad_menus');
+        Schema::dropIfExists('ad_bbs');
     }
 }

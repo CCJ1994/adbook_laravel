@@ -6,13 +6,15 @@
     <div class="card card-success h-100">
       <div class="card-header">
         <h3 class="card-title">
-          {{ $menus['name'] }}
+          {{ $data['name'] }}
         </h3>
       </div>
-      <div class="card-body p-3">
-        <div class="card">
+      <div class="card-body p-3 overflow-auto">
+          @if ( !empty($data['bboard']))
+          @foreach ( $data['bboard'] as $bboard)
+          <div class="card card-danger card-outline">
           <div class="card-header">
-            <h3 class="card-title">Title</h3>
+            <h3 class="card-title">{{ $bboard['topic'] }}</h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -20,9 +22,15 @@
             </div>
           </div>
           <div class="card-body">
-            Start creating your amazing application!
+          {!! $bboard['content'] !!}
           </div>
         </div>
+          @endforeach
+          @else
+            目前無公告
+          @endif
+
+
       </div>
     </div>
   </div>

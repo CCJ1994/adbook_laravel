@@ -4,18 +4,18 @@
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
-    @foreach ($menus['allMenu'] as $menu )
+    @foreach ($data['allMenu'] as $menu )
     @if ($menu['menu_id']==0)
     @if ( $menu['idad_menu'] != 1)
     <li class="nav-item d-none d-sm-inline-block dropdown dropdown-hover">
-      @if ( $menu['idad_menu'] == $menus['menu_id'])
+      @if ( $menu['idad_menu'] == $data['menu_id'])
 
       <a class="nav-link active" data-toggle="dropdown">{{$menu['name']}}</a>
       @else
       <a class="nav-link" data-toggle="dropdown">{{$menu['name']}}</a>
       @endif
       <ul class="dropdown-menu border-0 shadow">
-        @foreach ( $menus['allMenu'] as $subMenu)
+        @foreach ( $data['allMenu'] as $subMenu)
         @if ( $subMenu['menu_id'] == $menu['idad_menu'])
         <li>
           <a href="{{ route('dashboard.getMenu',['page'=> $subMenu['url'] ]) }}"
@@ -26,7 +26,7 @@
       </ul>
     </li>
     @else
-    @if ( $menus['menu_id']==0)
+    @if ( $data['menu_id']==0)
     <li class="nav-item d-none d-sm-inline-block active">
       <a href=" {{ route('dashboard.index') }}" class="nav-link">{{$menu['name']}}</a>
     </li>
@@ -120,9 +120,9 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-        @foreach ( $menus['allMenu'] as $key => $mainMenu)
+        @foreach ( $data['allMenu'] as $key => $mainMenu)
         @if ($mainMenu['menu_id']==0 && $mainMenu['idad_menu']!=1)
-        @if ($mainMenu['idad_menu']==$menus['menu_id'])
+        @if ($mainMenu['idad_menu']==$data['menu_id'])
         <li class="nav-item menu-open">
           <a class="nav-link active">
             <i class="nav-icon fas fa-dot-circle"></i>
@@ -133,10 +133,10 @@
           </a>
 
           <ul class="nav nav-treeview">
-            @foreach ( $menus['allMenu'] as $subMenu )
+            @foreach ( $data['allMenu'] as $subMenu )
             @if ( $subMenu['menu_id']==$mainMenu['idad_menu'] )
             <li class="nav-item">
-              @if ( $subMenu['url'] == $menus['url'] )
+              @if ( $subMenu['url'] == $data['url'] )
               <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
@@ -164,10 +164,10 @@
           </a>
 
           <ul class="nav nav-treeview">
-            @foreach ( $menus['allMenu'] as $subMenu )
+            @foreach ( $data['allMenu'] as $subMenu )
             @if ( $subMenu['menu_id']==$mainMenu['idad_menu'] )
             <li class="nav-item">
-              @if ( $subMenu['url'] == $menus['url'] )
+              @if ( $subMenu['url'] == $data['url'] )
               <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
@@ -187,7 +187,7 @@
         @endif
 
         @elseif ( $mainMenu['idad_menu']==1 )
-        @if ( $menus['url']=='home' )
+        @if ( $data['url']=='home' )
         <li class="nav-item menu-open">
           <a href="{{ url('dashboard') }}" class="nav-link active">
             <i class="nav-icon fas fa-home"></i>

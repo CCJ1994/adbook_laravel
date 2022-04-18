@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Ad_menu;
 use App\Models\Ad_bb;
-class MenuController extends Controller
+class BboardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,14 +13,8 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $data=[];
-        $bboard=Ad_bb::get()->toArray();
-        $menus=Ad_menu::get()->toArray();
-        $data['bboard']=$bboard;
-        $data['url']='home';
-        $data['name']='公告';
-        $data['allMenu']=$menus;
-        $data['menu_id']='0';
+        $data=Ad_bb::get()->toArray();
+
         return view('dashboard')->with('data',$data);
     }
 
@@ -54,7 +47,7 @@ class MenuController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -89,26 +82,5 @@ class MenuController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function getMenu($page)
-    {
-      $data=[];
-      $menus=Ad_menu::get()->toArray();
-      $data['name']="";
-      $data['url']=$page;
-      $data['allMenu']=$menus;
-      $data['menu_id']="";
-      if(!empty($page)){
-        foreach ($menus as $key => $menu) {
-          if($menu['url']==$page){
-              $data['menu_id']=$menu['menu_id'];
-              $data['name']=$menu['name'];
-          }
-        }
-      }else{
-        $data['url']='dashboard';
-    }
-    return view('dashboard')->with('data',$data);
     }
 }

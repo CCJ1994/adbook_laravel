@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\BboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,3 +27,4 @@ require __DIR__.'/auth.php';
 Route::get('/dashboard', [MenuController::class, 'index'])->name('dashboard.index');
 Route::get('/dashboard/{page}', [MenuController::class, 'getMenu'])->name('dashboard.getMenu');
 
+Route::resource('/dashboard/Bboards', BboardController::class);

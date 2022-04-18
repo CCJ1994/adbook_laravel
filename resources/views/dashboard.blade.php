@@ -1,10 +1,10 @@
 <!-- resources/views/child.blade.php -->
 @extends('layouts.layout')
 
-@section('title', $menus['name'])
+@section('title', $data['name'])
 
 @section('content')
 
-@include('page.'.$menus['url'])
+@include('page.'.$data['url'])
 
 @endsection
