@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Ad_menu;
+// use App\Models\Ad_menu;
 use App\Models\Ad_bb;
 class MenuController extends Controller
 {
@@ -16,7 +16,7 @@ class MenuController extends Controller
     {
         $data=[];
         $bboard=Ad_bb::get()->toArray();
-        $menus=Ad_menu::get()->toArray();
+        $menus=$this->menus;
         $data['bboard']=$bboard;
         $data['url']='home';
         $data['name']='公告';
@@ -94,7 +94,7 @@ class MenuController extends Controller
     public function getMenu($page)
     {
       $data=[];
-      $menus=Ad_menu::get()->toArray();
+      $menus=$this->menus;
       $data['name']="";
       $data['url']=$page;
       $data['allMenu']=$menus;

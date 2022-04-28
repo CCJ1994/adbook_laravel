@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Ad_bb;
-class BboardController extends Controller
+use App\Models\User;
+
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +14,23 @@ class BboardController extends Controller
      */
     public function index()
     {
-        $data=Ad_bb::get()->toArray();
-
+      $data=[];
+      $users=User::get()->toArray();
+      $menus=$this->menus;
+      $data['name']="";
+      $data['url']='users';
+      $data['allMenu']=$menus;
+      $data['menu_id']="";
+      if(!empty($page)){
+        foreach ($menus as $key => $menu) {
+          if($menu['url']=='users'){
+              $data['menu_id']=$menu['menu_id'];
+              $data['name']=$menu['name'];
+          }
+        }
+      }
+      $data['users']=$users;
+        // $data=User::get()->toArray();
         return view('dashboard')->with('data',$data);
     }
 
@@ -83,17 +99,4 @@ class BboardController extends Controller
     {
         //
     }
-    public function home()
-    {
-        $data=[];
-        $bboard=Ad_bb::get()->toArray();
-        $menus=$this->menus;
-        $data['bboard']=$bboard;
-        $data['url']='home';
-        $data['name']='公告';
-        $data['allMenu']=$menus;
-        $data['menu_id']='0';
-        return view('dashboard')->with('data',$data);
-    }
-
 }

@@ -18,7 +18,7 @@
         @foreach ( $data['allMenu'] as $subMenu)
         @if ( $subMenu['menu_id'] == $menu['idad_menu'])
         <li>
-          <a href="{{ route('dashboard.getMenu',['page'=> $subMenu['url'] ]) }}"
+          <a href=""
             class="dropdown-item">{{$subMenu['name']}}</a>
         </li>
         @endif
@@ -28,11 +28,11 @@
     @else
     @if ( $data['menu_id']==0)
     <li class="nav-item d-none d-sm-inline-block active">
-      <a href=" {{ route('dashboard.index') }}" class="nav-link">{{$menu['name']}}</a>
+      <a href=" {{ route('dashboard.home') }}" class="nav-link">{{$menu['name']}}</a>
     </li>
     @else
     <li class="nav-item d-none d-sm-inline-block">
-      <a href=" {{ route('dashboard.index') }}" class="nav-link">{{$menu['name']}}</a>
+      <a href=" {{ route('dashboard.home') }}" class="nav-link">{{$menu['name']}}</a>
     </li>
     @endif
 
@@ -78,9 +78,15 @@
         <i class="fas fa-cog"></i>
       </a>
       <ul class="dropdown-menu border-0 shadow">
-        <li><a href="#" class="dropdown-item">公告內容 </a></li>
-        <li><a href="#" class="dropdown-item">使用者維護</a></li>
-        <li><a href="#" class="dropdown-item">權限設定</a></li>
+          @foreach ( $data['allMenu'] as $menu)
+            @if ($menu['menu_id']==99 && $menu['url']!="users")
+                <li><a href="" class="dropdown-item">{{ $menu['name'] }}</a></li>
+            @elseif($menu['url']=="users")
+            <li><a href="{{ route('users.index') }}" class="dropdown-item">{{ $menu['name'] }}</a></li>
+
+
+            @endif
+          @endforeach
       </ul>
     </li>
     <li class="nav-item">
@@ -137,7 +143,7 @@
             @if ( $subMenu['menu_id']==$mainMenu['idad_menu'] )
             <li class="nav-item">
               @if ( $subMenu['url'] == $data['url'] )
-              <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link active">
+              <a href="" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
               </a>
@@ -168,12 +174,12 @@
             @if ( $subMenu['menu_id']==$mainMenu['idad_menu'] )
             <li class="nav-item">
               @if ( $subMenu['url'] == $data['url'] )
-              <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link active">
+              <a href="" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
               </a>
               @else
-              <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link">
+              <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
               </a>

@@ -25,7 +25,7 @@
         <form method="POST" action="{{ route('login') }}">
           @csrf
           <div class="input-group mb-3">
-            <input type="email" name="email" class="form-control" placeholder="Email">
+            <input type="text" name="account" class="form-control" placeholder="帳號">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -33,7 +33,7 @@
             </div>
           </div>
           <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password">
+            <input type="password" name="password" class="form-control" placeholder="密碼">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -43,8 +43,8 @@
           <div class="row">
             <div class="col-8">
               <div class="icheck-primary">
-                <input type="checkbox" id="remember">
-                <label for="remember">
+                <input type="checkbox" id="remember_me" name="remember">
+                <label for="remember_me">
                   Remember Me
                 </label>
               </div>
