@@ -1,5 +1,4 @@
 <html>
-
 <head>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
@@ -14,11 +13,10 @@
   <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-
+  <!-- jQuery -->
+  <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
   <title>@yield('title')</title>
-
 </head>
-
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
     @section('sidebar')
@@ -38,16 +36,12 @@
     </footer>
   </div>
 
-  <!-- jQuery -->
-  <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
   <!-- Bootstrap 4 -->
   <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <!-- overlayScrollbars -->
   <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
   <!-- AdminLTE App -->
   <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
-
-
 </body>
 
 </html>

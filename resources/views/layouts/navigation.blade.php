@@ -148,7 +148,7 @@
                 <p>{{ $subMenu['name'] }}</p>
               </a>
               @else
-              <a href="{{ route('dashboard.getMenu',['page'=>$subMenu['url'] ]) }}" class="nav-link">
+              <a href="{{ route($subMenu['url'].'.index') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['name'] }}</p>
               </a>

@@ -30,6 +30,8 @@ Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.hom
 
 
 Route::prefix('dashboard')->group(function () {
-    Route::resource('bboards', BboardController::class);
-    Route::resource('users', UserController::class);
+  Route::resources([
+    'bboards' => BboardController::class,
+    'users' => UserController::class,
+  ]);
 });

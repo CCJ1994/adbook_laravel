@@ -5,6 +5,6 @@
 
 @section('content')
 
-@include('page.'.$data['url'])
+@include($data['url'].".".$data['page'])
 
 @endsection

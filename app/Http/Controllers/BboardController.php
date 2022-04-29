@@ -90,6 +90,7 @@ class BboardController extends Controller
         $menus=$this->menus;
         $data['bboard']=$bboard;
         $data['url']='home';
+        $data['page']='index';
         $data['name']='公告';
         $data['allMenu']=$menus;
         $data['menu_id']='0';
