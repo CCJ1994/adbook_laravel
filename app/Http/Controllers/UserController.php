@@ -7,7 +7,10 @@ use App\Models\User;
 use App\Models\Ad_team;
 use App\Models\Ad_role;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 class UserController extends Controller
 {
     /**
@@ -19,7 +22,11 @@ class UserController extends Controller
     {
       $data=[];
       $users=User::get()->toArray();
+      $teams=Ad_team::get()->toArray();
+      $roles=Ad_role::get()->toArray();
       $menus=$this->menus;
+      $data['teams']=$teams;
+      $data['roles']=$roles;
       $data['name']="";
       $data['url']='users';
       $data['page']='index';
@@ -35,7 +42,7 @@ class UserController extends Controller
       }
       $data['users']=$users;
         // $data=User::get()->toArray();
-      return view('dashboard')->with('data',$data);
+      return view($data['url'].".index")->with('data',$data);
     }
 
     /**
@@ -56,7 +63,32 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+      ]);
+      $file=$request->file('photofile');
+      $photofile="";
+      if(!empty($file)){
+        $photofile=$file->getClientOriginalName();
+        $request->photofile->storeAs('images',$photofile,'public');
+      }
+      $user = User::create([
+        'account' => $request->email,
+        'role' => $request->role,
+        'team' => $request->team,
+        'modify_by' => Auth::user()->account,
+        'modify_time' => date("Y-m-d H:i:s"),
+        'tel' => $request->tel,
+        'name' => $request->name,
+        'email' => $request->email,
+        'utma' => '',
+        'password' => Hash::make($request->password),
+        'photofile' => $photofile,
+      ]);
+      event(new Registered($user));
+      return redirect()->route('users.index');
     }
 
     /**
@@ -66,6 +98,39 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {
+      $data=[];
+      $user=User::find($id)->toArray();
+      $teams=Ad_team::get()->toArray();
+      $roles=Ad_role::get()->toArray();
+      $data['user']=$user;
+      $data['teams']=$teams;
+      $data['roles']=$roles;
+      $menus=$this->menus;
+      $data['name']="";
+      $data['url']='users';
+      $data['page']='show';
+      $data['allMenu']=$menus;
+      $data['menu_id']="";
+      if(!empty($page)){
+        foreach ($menus as $key => $menu) {
+          if($menu['url']=='users'){
+              $data['menu_id']=$menu['menu_id'];
+              $data['name']=$menu['name'];
+          }
+        }
+      }
+        // $data=User::get()->toArray();
+        return view($data['url'].".show")->with('data',$data);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
       $data=[];
       $user=User::find($id)->toArray();
@@ -89,18 +154,7 @@ class UserController extends Controller
         }
       }
         // $data=User::get()->toArray();
-      return view('dashboard')->with('data',$data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return view($data['url'].".edit")->with('data',$data);
     }
 
     /**
@@ -112,7 +166,24 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $input = $request->except('_token', '_method');
+      $data=User::find($id);
+      $data->name=$input['name'];
+      $data->email=$input['email'];
+      $data->email=$input['email'];
+      $data->tel=$input['tel'];
+      $data->team=$input['team'];
+      $data->role=$input['role'];
+      $data->status=$input['status'];
+      $data->modify_by=Auth::user()->account;
+      $file=$request->file('photofile');
+      if(!empty($file)){
+        $data->photofile=$file->getClientOriginalName();
+        $request->photofile->storeAs('images',$data->photofile,'public');
+      }
+      $data->save();
+      return redirect()->route('users.show', ['user'=> $id ]);
+      
     }
 
     /**

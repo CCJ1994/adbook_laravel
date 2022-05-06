@@ -52,11 +52,14 @@
                   <b>Friends</b> <a class="float-right">13,287</a>
                 </li>
               </ul>
-              <a class="btn btn-secondary btn-block" href="{{ route('users.show', ['user'=> $data['user']['id'] ] ) }}">
-                <i class="fas fa-ban">
+              @if ($data['user']['role']!=13)
+
+              <a class="btn btn-primary btn-block" href="{{ route('users.edit', ['user'=> $data['user']['id'] ] ) }}">
+                <i class="fas fa-pencil-alt">
                 </i>
-                Cancel
+                Edit
               </a>
+              @endif
             </div>
             <!-- /.card-body -->
           </div>
@@ -70,35 +73,32 @@
             </div><!-- /.card-header -->
             <div class="card-body">
               <div id="settings">
-                <form class="form-horizontal" action="{{ route('users.update',['user'=>$data['user']['id']]) }}"
-                  method="post" enctype="multipart/form-data">
-                  @csrf
-                  @method('PUT')
+                <form class="form-horizontal">
                   <div class="form-group row">
                     <label for="inputName" class="col-sm-2 col-form-label">姓名</label>
                     <div class="col-sm-10">
                       <input type="text" name="name" class="form-control" id="inputName"
-                        value="{{ $data['user']['name'] }}" placeholder="姓名">
+                        value="{{ $data['user']['name'] }}" placeholder="姓名" readonly>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="inputEmail" class="col-sm-2 col-form-label">信箱</label>
                     <div class="col-sm-10">
                       <input type="email" name="email" class="form-control" id="inputEmail"
-                        value="{{ $data['user']['email'] }}" placeholder="電子郵件">
+                        value="{{ $data['user']['email'] }}" placeholder="電子郵件" readonly>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="inputTel" class="col-sm-2 col-form-label">電話</label>
                     <div class="col-sm-10">
                       <input type="text" name="tel" class="form-control" id="inputTel"
-                        value="{{ $data['user']['tel'] }}" placeholder="電話">
+                        value="{{ $data['user']['tel'] }}" placeholder="電話" readonly>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="inputTeam" class="col-sm-2 col-form-label">組別</label>
                     <div class="col-sm-10">
-                      <select class="form-control" name="team" id="inputTeam">
+                      <select class="form-control" name="team" id="inputTeam" disabled>
                         @if ($data['user']['team']=="")
                         <option value="" selected>請選擇</option>
                         @else
@@ -116,7 +116,7 @@
                   <div class="form-group row">
                     <label for="inputRole" class="col-sm-2 col-form-label">職稱</label>
                     <div class="col-sm-10">
-                      <select class="form-control" name="role" id="inputRole">
+                      <select class="form-control" name="role" id="inputRole" disabled>
                         @if ($data['user']['role']=="")
                         <option value="">請選擇</option>
                         @endif
@@ -133,7 +133,7 @@
                   <div class="form-group row">
                     <label for="inputStatus" class="col-sm-2 col-form-label">狀態</label>
                     <div class="col-sm-10">
-                      <select class="form-control" name="status" id="inputStatus">
+                      <select class="form-control" name="status" id="inputStatus" disabled>
                         @switch($data['user']['status'])
                         @case("")
                         <option value="" selected>請選擇</option>
@@ -154,28 +154,6 @@
                       </select>
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label for="inputFile" class="col-sm-2 col-form-label">照片</label>
-                    <div class="col-sm-10">
-                      <input type="file" name="photofile" class="form-control-file" id="inputFile">
-                    </div>
-
-                  </div>
-                
-                  <!-- <div class="form-group row">
-                     <div class="offset-sm-2 col-sm-10">
-                       <div class="checkbox">
-                         <label>
-                           <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                         </label>
-                       </div>
-                     </div>
-                   </div> -->
-                  <div class="form-group row">
-                    <div class="offset-sm-2 col-sm-10">
-                      <button type="submit" class="btn btn-danger">Submit</button>
-                    </div>
-                  </div>
                 </form>
               </div>
               <!-- /.tab-content -->
@@ -194,53 +172,7 @@
 
 @endsection
 
-@section('scripts')
+@section('footerScripts')
 @parent
 
-<script>
-var teamsAry = <?=json_encode($data['teams']);?>;
-var rolesAry = <?=json_encode($data['roles']);?>;
-$(document).ready(function() {
-  $("select[name='team']").change(function() {
-    let team = $("select[name='team']").val();
-    $("select[name='role']").html("");
-    if (team != "") {
-      if (team == 1) { //無組別
-        Object.entries(rolesAry).forEach(([key, value]) => {
-          if (value.id >= 9) {
-            $("select[name='role']").append($('<option>', {
-              value: value.id,
-              text: value.role
-            }));
-          }
-        });
-      } else if (team == 2) { //策略中心
-        Object.entries(rolesAry).forEach(([key, value]) => {
-          if (value.id >= 5 && value.id <= 8) {
-            $("select[name='role']").append($('<option>', {
-              value: value.id,
-              text: value.role
-            }));
-          }
-        });
-      } else {
-        Object.entries(rolesAry).forEach(([key, value]) => {
-          if (value.multiple == "Y") {
-            $("select[name='role']").append($('<option>', {
-              value: value.id,
-              text: value.role
-            }));
-          }
-        });
-      }
-    } else {
-      $("select[name='role']").append($('<option>', {
-        value: "",
-        text: "請選擇"
-      }));
-    }
-  });
-});
-
-</script>
 @endsection

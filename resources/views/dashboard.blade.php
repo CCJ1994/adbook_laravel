@@ -8,3 +8,8 @@
 @include($data['url'].".".$data['page'])
 
 @endsection
+
+@section('footerScripts')
+  @parent
+  
+@endsection

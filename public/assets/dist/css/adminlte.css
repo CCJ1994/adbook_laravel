@@ -12629,8 +12629,9 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 .user-panel img {
-  height: auto;
+  height: 2.1rem;
   width: 2.1rem;
+  object-fit: contain;
 }
 
 .user-panel .info {
@@ -35146,6 +35147,8 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   margin: 0 auto;
   padding: 3px;
   width: 100px;
+  height: 100px;
+  object-fit: contain;
 }
 
 .profile-username {
@@ -35234,6 +35237,8 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   border-radius: 50%;
   display: inline;
   width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
 }
 
 .projects .project-state {

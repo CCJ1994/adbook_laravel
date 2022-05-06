@@ -19,7 +19,7 @@ class AddFliedsToUsers extends Migration
             $table->string('role')->default(NULL);
             $table->string('team')->default(NULL);
             $table->string('modify_by')->default(NULL);
-            $table->datetime('modify_time')->default(NULL);
+            $table->datetime('modify_time')->default(date("Y-m-d H:i:s"));
             $table->string('sign1')->default('N');
             $table->string('sign2')->default('N');
             $table->string('team_view')->default('N');

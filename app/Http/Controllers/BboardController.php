@@ -15,7 +15,7 @@ class BboardController extends Controller
     {
         $data=Ad_bb::get()->toArray();
 
-        return view('dashboard')->with('data',$data);
+        return view('home.index')->with('data',$data);
     }
 
     /**
@@ -94,7 +94,7 @@ class BboardController extends Controller
         $data['name']='公告';
         $data['allMenu']=$menus;
         $data['menu_id']='0';
-        return view('dashboard')->with('data',$data);
+        return view($data['url'].".index")->with('data',$data);
     }
 
 }

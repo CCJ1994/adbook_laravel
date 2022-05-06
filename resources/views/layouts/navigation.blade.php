@@ -14,7 +14,7 @@
       @else
       <a class="nav-link" data-toggle="dropdown">{{$menu['name']}}</a>
       @endif
-      <ul class="dropdown-menu border-0 shadow">
+      <ul class="border-0 shadow dropdown-menu">
         @foreach ( $data['allMenu'] as $subMenu)
         @if ( $subMenu['menu_id'] == $menu['idad_menu'])
         <li>
@@ -77,13 +77,12 @@
       <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#">
         <i class="fas fa-cog"></i>
       </a>
-      <ul class="dropdown-menu border-0 shadow">
+      <ul class="border-0 shadow dropdown-menu">
           @foreach ( $data['allMenu'] as $menu)
             @if ($menu['menu_id']==99 && $menu['url']!="users")
-                <li><a href="" class="dropdown-item">{{ $menu['name'] }}</a></li>
+                <li><a class="dropdown-item">{{ $menu['name'] }}</a></li>
             @elseif($menu['url']=="users")
             <li><a href="{{ route('users.index') }}" class="dropdown-item">{{ $menu['name'] }}</a></li>
-
 
             @endif
           @endforeach
@@ -115,7 +114,14 @@
     <!-- Sidebar user panel (optional) -->
     <div class="pb-3 mt-3 mb-3 user-panel d-flex">
       <div class="image">
-        <img src="{{ asset('assets/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+        @if (!empty(Auth::user()->photofile))
+          
+        <img src="{{ asset('/storage/images/'.Auth::user()->photofile) }}" class="img-circle elevation-2" alt="User Image">
+        @else
+        
+        <img src="{{ asset('assets/dist/img/user4-128x128.jpg') }}" class="img-circle elevation-2" alt="User Image">
+        @endif
+
       </div>
       <div class="info">
         <a href="#" class="d-block">{{ Auth::user()->name }}</a>

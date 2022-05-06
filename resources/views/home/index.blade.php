@@ -1,15 +1,26 @@
+
+@extends('layouts.layout')
+
+@section('head')
+@parent
+
+@endsection
+
+@section('title', $data['name'])
+
+@section('content')
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper kanban">
-
   <!-- Main content -->
-  <div class="content p-3">
+  <div class="p-3 content">
     <div class="card card-success h-100">
       <div class="card-header">
         <h3 class="card-title">
           {{ $data['name'] }}
         </h3>
       </div>
-      <div class="card-body p-3 overflow-auto">
+      <div class="p-3 overflow-auto card-body">
           @if ( !empty($data['bboard']))
           @foreach ( $data['bboard'] as $bboard)
           <div class="card card-danger card-outline">
@@ -47,3 +58,10 @@
   </div>
 </aside>
 <!-- /.control-sidebar -->
+
+@endsection
+
+@section('scripts')
+  @parent
+  
+@endsection

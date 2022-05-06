@@ -14,15 +14,28 @@
 <div class="hold-transition register-page">
   <div class="register-box">
     <div class="card card-outline card-primary">
-      <div class="card-header text-center">
+      <div class="text-center card-header">
         <a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a>
       </div>
       <div class="card-body">
         <p class="login-box-msg">Register a new membership</p>
+        <!-- error message -->
+        @if ($errors->any())
+        <p>
+        <div class="text-danger font-weight-bold">
+          Whoops! Something went wrong.
+        </div>
 
+        <ul class="mt-3 text-sm list-disc list-inside text-danger">
+          @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+        </p>
+        @endif
         <form method="POST" action="{{ route('register') }}">
           @csrf
-          <div class="input-group mb-3">
+          <div class="mb-3 input-group">
             <input type="text" name="name" class="form-control" placeholder="Full name">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -30,7 +43,7 @@
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
+          <div class="mb-3 input-group">
             <input type="email" name="email" class="form-control" placeholder="Email">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -38,7 +51,7 @@
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
+          <div class="mb-3 input-group">
             <input type="password" name="password" class="form-control" placeholder="Password">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -46,7 +59,7 @@
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
+          <div class="mb-3 input-group">
             <input type="password" name="password_confirmation" class="form-control" placeholder="Retype password">
             <div class="input-group-append">
               <div class="input-group-text">
