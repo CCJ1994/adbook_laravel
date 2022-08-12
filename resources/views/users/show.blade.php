@@ -5,23 +5,30 @@
 
 @endsection
 
-@section('title', $data['name'])
+@section('title', $data['title'])
 
 @section('content')
 
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+<div class="content-wrapper kanban">
   <!-- Content Header (Page header) -->
-  <section class="content-header">
+  <div class="content-header">
     <div class="container-fluid">
-      <div class="mb-2">
-        <h1>個人資料</h1>
+      <div class="mb-2 row">
+        <div class="col-sm-6">
+            <h1>個人資料</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">使用者維護</a></li>
+            <li class="breadcrumb-item active">{{ $data['user']['name'] }}</li>
+          </ol>
+        </div>
       </div>
     </div><!-- /.container-fluid -->
-  </section>
+  </div>
   <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
+  <div class="px-3 pb-3 overflow-auto content">
       <div class="row">
         <div class="col-md-3">
           <!-- Profile Image -->
@@ -39,25 +46,34 @@
 
               <h3 class="text-center profile-username">{{ $data['user']['name'] }}</h3>
 
-              <p class="text-center text-muted">{{ $data['user']['team']."/".$data['user']['role'] }}</p>
-
               <ul class="mb-3 list-group list-group-unbordered">
                 <li class="list-group-item">
-                  <b>Followers</b> <a class="float-right">1,322</a>
+                  <b>組別</b>
+                  <span class="float-right">
+                    {{ $data['teams'][$data['user']['team']] }}
+                  </span>
                 </li>
                 <li class="list-group-item">
-                  <b>Following</b> <a class="float-right">543</a>
+                  <b>職稱</b>
+                  <span class="float-right">
+                    {{ $data['role'] }}
+                  </span>
                 </li>
                 <li class="list-group-item">
-                  <b>Friends</b> <a class="float-right">13,287</a>
+                  <b>狀態</b>
+                  <span class="float-right">
+                    @if ($data['user']['status'] == 1)
+                    啟用
+                    @else
+                    停用
+                    @endif
+                  </span>
                 </li>
               </ul>
-              @if ($data['user']['role']!=13)
-
+              @if (Auth::user()->role == 13)
               <a class="btn btn-primary btn-block" href="{{ route('users.edit', ['user'=> $data['user']['id'] ] ) }}">
-                <i class="fas fa-pencil-alt">
-                </i>
-                Edit
+                編輯
+                <i class="fas fa-pencil-alt"></i>
               </a>
               @endif
             </div>
@@ -99,17 +115,14 @@
                     <label for="inputTeam" class="col-sm-2 col-form-label">組別</label>
                     <div class="col-sm-10">
                       <select class="form-control" name="team" id="inputTeam" disabled>
-                        @if ($data['user']['team']=="")
-                        <option value="" selected>請選擇</option>
+                        <option value="">請選擇</option>
+                        @foreach ($data['teams'] as $key => $team)
+                        @if ($data['user']['team']==$key)
+                        <option value="{{ $key }}" selected>{{ $team }}</option>
                         @else
-                        @foreach ($data['teams'] as $team)
-                        @if ($data['user']['team']==$team)
-                        <option value="{{ $team['id'] }}" selected>{{ $team['team'] }}</option>
-                        @else
-                        <option value="{{ $team['id'] }}">{{ $team['team'] }}</option>
+                        <option value="{{ $key }}">{{ $team }}</option>
                         @endif
                         @endforeach
-                        @endif
                       </select>
                     </div>
                   </div>
@@ -117,11 +130,9 @@
                     <label for="inputRole" class="col-sm-2 col-form-label">職稱</label>
                     <div class="col-sm-10">
                       <select class="form-control" name="role" id="inputRole" disabled>
-                        @if ($data['user']['role']=="")
                         <option value="">請選擇</option>
-                        @endif
                         @foreach ($data['roles'] as $role)
-                        @if ($data['user']['role']==$role)
+                        @if ($data['user']['role']==$role['id'])
                         <option value="{{ $role['id'] }}" selected>{{ $role['role'] }}</option>
                         @else
                         <option value="{{ $role['id'] }}">{{ $role['role'] }}</option>
@@ -134,23 +145,13 @@
                     <label for="inputStatus" class="col-sm-2 col-form-label">狀態</label>
                     <div class="col-sm-10">
                       <select class="form-control" name="status" id="inputStatus" disabled>
-                        @switch($data['user']['status'])
-                        @case("")
-                        <option value="" selected>請選擇</option>
-                        <option value="0">停用</option>
-                        <option value="1">啟用</option>
-                        @break
-                        @case(0)
-                        <option value="">請選擇</option>
+                        @if ($data['user']['status'] == 0)
                         <option value="0" selected>停用</option>
                         <option value="1">啟用</option>
-                        @break
-                        @case(1)
-                        <option value="">請選擇</option>
+                        @else
                         <option value="0">停用</option>
                         <option value="1" selected>啟用</option>
-                        @break
-                        @endswitch
+                        @endif
                       </select>
                     </div>
                   </div>
@@ -164,8 +165,7 @@
         <!-- /.col -->
       </div>
       <!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </section>
+  </div>
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->

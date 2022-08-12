@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\BboardController;
 use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,19 +20,34 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
 
-Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
-// Route::get('/dashboard/{page}', [MenuController::class, 'getMenu'])->name('dashboard.getMenu');
+// Route::group(['middleware' => ['auth:web'], 'prefix' => 'dashboard'], function () {
+//     Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
+//     Route::resources([
+//         'bboards' => BboardController::class,
+//         'users' => UserController::class,
+//     ]);
+// });
 
-
-Route::prefix('dashboard')->group(function () {
-  Route::resources([
-    'bboards' => BboardController::class,
-    'users' => UserController::class,
-  ]);
+Route::group(['middleware' => ['auth:web']], function () {
+    Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/showOff/{id}', [BboardController::class, 'showOff'])->name('bboards.showOff');
+        Route::resources([
+            'bboards' => BboardController::class,
+            'users' => UserController::class,
+        ]);
+    });
 });
+// Route::prefix('dashboard')->group(function () {
+//     Route::resources([
+//         'bboards' => BboardController::class,
+//         'users' => UserController::class,
+//     ]);
+// });

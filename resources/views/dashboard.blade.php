@@ -11,5 +11,6 @@
 
 @section('footerScripts')
   @parent
-  
+
 @endsection
+

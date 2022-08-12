@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use App\Models\Menu;
-use App\Models\Bboard;
-class MenuController extends Controller
+
+class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,15 +13,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $data=[];
-        $bboard=Bboard::get()->toArray();
-        $menus=$this->menus;
-        $data['bboard']=$bboard;
-        $data['url']='home';
-        $data['title']='公告';
-        $data['allMenu']=$menus;
-        $data['menu_id']='0';
-        return view('dashboard')->with('data',$data);
+        //
     }
 
     /**
@@ -54,7 +45,7 @@ class MenuController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -89,26 +80,5 @@ class MenuController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function getMenu($page)
-    {
-      $data=[];
-      $menus=$this->menus;
-      $data['name']="";
-      $data['url']=$page;
-      $data['allMenu']=$menus;
-      $data['menu_id']="";
-      if(!empty($page)){
-        foreach ($menus as $key => $menu) {
-          if($menu['url']==$page){
-              $data['menu_id']=$menu['menu_id'];
-              $data['name']=$menu['name'];
-          }
-        }
-      }else{
-        $data['url']='dashboard';
-    }
-    return view('dashboard')->with('data',$data);
     }
 }

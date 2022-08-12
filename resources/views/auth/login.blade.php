@@ -21,7 +21,7 @@
       </div>
       <div class="card-body">
         <p class="login-box-msg">Sign in to start your session</p>
-        
+
          <!-- error message -->
          @if ($errors->any())
         <p>
@@ -39,7 +39,7 @@
         <form method="POST" action="{{ route('login') }}">
           @csrf
           <div class="mb-3 input-group">
-            <input type="text" name="account" class="form-control" placeholder="帳號">
+            <input type="email" name="email" class="form-control" placeholder="信箱">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>

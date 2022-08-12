@@ -5,22 +5,20 @@
 @parent
 <!-- SweetAlert2 -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
-<!-- Toastr -->
-<link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css')}}">
 @endsection
 
-@section('title', $data['name'])
+@section('title', $data['title'])
 
 @section('content')
 
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+<div class="content-wrapper kanban">
   <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="mb-2 row">
         <div class="col-sm-6">
-          <h1 class="m-0">{{ $data['name'] }}</h1>
+          <h1 class="m-0">{{ $data['title'] }}</h1>
         </div><!-- /.col -->
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -28,34 +26,39 @@
   <!-- /.content-header -->
 
   <!-- Main content -->
-  <div class="content">
+  <div class="pb-3 content">
 
     <!-- Default box -->
-    <div class="card">
+    <div class="card h-100">
       <div class="card-header d-flex align-items-center">
         <h3 class="card-title">使用者清單</h3>
+        @if (Auth::user()->role==13)
         <!-- Button trigger modal -->
-        <button class="ml-2 btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal">
+        <button class="ml-2 btn btn-info btn-sm" data-toggle="modal" data-target="#addModal">
+          新增
           <i class="fas fa-plus"></i>
-          Add
         </button>
+        @endif
       </div>
-      <div class="p-0 card-body">
+      <div class="overflow-auto card-body">
         <table class="table text-center table-striped projects">
           <thead>
             <tr>
               <th style="width: 10%">照片</th>
               <th style="width: 10%">姓名</th>
               <th style="width: 10%">職位</th>
-              <th style="width: 20%">帳號</th>
+              <th style="width: 20%">信箱</th>
               <th style="width: 20%">組別</th>
               <th style="width: 10%">電話</th>
               <th style="width: 8%">狀態</th>
-              <th style="width: 20%">功能</th>
+              @if (Auth::user()->role == 13)
+              <th style="width: 20%"></th>
+              @endif
             </tr>
           </thead>
           <tbody>
-            @foreach ($data['users'] as $user )
+            @if (!empty($data['users']['data']))
+            @foreach ($data['users']['data'] as $user )
             <tr>
               <td>
                 @if (!empty($user['photofile']))
@@ -76,12 +79,12 @@
                 @endforeach
               </td>
               <td>
-                {{ $user['account'] }}
+                {{ $user['email'] }}
               </td>
               <td>
-                @foreach ($data['teams'] as $team)
-                @if ($team['id']==$user['team'])
-                {{ $team['team'] }}
+                @foreach ($data['teams'] as $key => $team)
+                @if ( $key ==$user['team'])
+                {{ $team }}
                 @endif
                 @endforeach
               </td>
@@ -93,38 +96,51 @@
                 啟用
                 @endif
               </td>
-              <td class="text-right project-actions">
+              @if (Auth::user()->role == 13)
+              <td class="project-actions">
                 <a class="btn btn-primary btn-sm" href="{{ route('users.show', ['user'=> $user['id'] ] ) }}">
-                  <i class="fas fa-folder">
-                  </i>
-                  View
+                  查看
+                  <i class="fas fa-eye"></i>
                 </a>
-                @if ($user['role']!=13)
-                <a class="btn btn-danger btn-sm" href="#">
-                  <i class="fas fa-trash">
-                  </i>
-                  Delete
-                </a>
-                @endif
               </td>
+              @endif
             </tr>
             @endforeach
+            @else
+            <tr><td colspan="8">目前無使用者</td></tr>
+            @endif
           </tbody>
         </table>
       </div>
       <!-- /.card-body -->
+      <!-- pagination -->
+      @if (!empty($data['users']['data']))
+      <div class="card-tools">
+        <ul class="mt-3 pagination pagination-sm justify-content-center">
+          @foreach ($data['users']['links'] as $page)
+          @if ( $page['label']=='pagination.previous' && !empty($page['url']) )
+          <li class="page-item"><a href="{{ $page['url'] }}" class="page-link">&laquo;</a></li>
+          @elseif ( $page['label']=='pagination.next' && !empty($page['url']) )
+          <li class="page-item"><a href="{{ $page['url'] }}" class="page-link">&raquo;</a></li>
+          @elseif ( is_numeric($page['label']) )
+          <li class="page-item"><a href="{{ $page['url'] }}" class="page-link">{{ $page['label'] }}</a></li>
+          @endif
+          @endforeach
+        </ul>
+      </div>
+      @endif
+      <!-- /pagination -->
     </div>
     <!-- /.card -->
-
   </div>
 
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">新增使用者</h5>
+          <h5 class="modal-title">新增使用者</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -168,9 +184,9 @@
               <label for="inputTeam" class="col-sm-2 col-form-label">組別</label>
               <div class="col-sm-10">
                 <select class="form-control" name="team" id="inputTeam">
-                  <option value="">請選擇</option>
-                  @foreach ($data['teams'] as $team)
-                  <option value="{{ $team['id'] }}">{{ $team['team'] }}</option>
+                  <option value="0">請選擇</option>
+                  @foreach ($data['teams'] as $key => $team)
+                  <option value="{{ $key }}">{{ $team }}</option>
                   @endforeach
                 </select>
               </div>
@@ -179,7 +195,7 @@
               <label for="inputRole" class="col-sm-2 col-form-label">職稱</label>
               <div class="col-sm-10">
                 <select class="form-control" name="role" id="inputRole">
-                  <option value="">請選擇</option>
+                  <option value="0">請選擇</option>
                 </select>
               </div>
             </div>
@@ -200,10 +216,9 @@
                 <input type="file" name="photofile" class="form-control-file" id="inputFile">
               </div>
             </div>
-
-            <div>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            <div class="text-right">
               <input type="submit" class="btn btn-primary" value="新增">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
             </div>
           </form>
         </div>
@@ -213,23 +228,12 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-  <!-- Control sidebar content goes here -->
-  <div class="p-3">
-    <h5>Title</h5>
-    <p>Sidebar content</p>
-  </div>
-</aside>
 @endsection
 
 @section('scripts')
 @parent
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-<!-- Toastr -->
-<script src="{{ asset('assets/plugins/toastr/toastr.min.js')}}"></script>
 <script>
 var teamsAry = <?=json_encode($data['teams']);?>;
 var rolesAry = <?=json_encode($data['roles']);?>;
@@ -268,7 +272,7 @@ $(document).ready(function() {
       }
     } else {
       $("select[name='role']").append($('<option>', {
-        value: "",
+        value: "0",
         text: "請選擇"
       }));
     }
@@ -281,12 +285,12 @@ var Toast = Swal.mixin({
   showConfirmButton: false,
   timer: 5000
 });
-var errMsg="";
-var hasErr = '<?=$errors->any();?>' ;
-let errStr="";
-if(hasErr){
+var errMsg = "";
+var hasErr = '<?=$errors->any();?>';
+let errStr = "";
+if (hasErr) {
   let errors = <?=json_encode($errors->all())?>;
-  errStr='<ul class="mt-3 text-sm list-disc list-inside text-danger">';
+  errStr = '<ul class="mt-3 text-sm list-disc list-inside text-danger">';
   errors.forEach(element => {
     errStr += '<li>' + element + '</li>';
   });
@@ -296,6 +300,5 @@ if(hasErr){
     title: errStr
   })
 }
-
 </script>
 @endsection
