@@ -6,8 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\Bboard;
 use Illuminate\Support\Facades\Auth;
 
+use App\Repositories\BboardRepository;
+
 class BboardController extends Controller
 {
+    private $bboardRepository;
+
+    public function __construct(
+        BboardRepository $bboardRepository
+    ) {
+        $this->bboardRepository=$bboardRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,19 +25,19 @@ class BboardController extends Controller
     public function index()
     {
         $data=[];
-        $bboard=Bboard::where('status','<>', 0)
-                    ->orderBy('msg_date', 'DESC')->paginate(15)->toArray();
+        $bboard=$this->bboardRepository->getAll(15);
 
         foreach ($bboard['data'] as $key => $value) {
-            if(mb_strlen($value['content']) > 20){
-                $bboard['data'][$key]['content']=mb_substr($value['content'],0,20)." ...";
+            if (mb_strlen($value['content']) > 20) {
+                $bboard['data'][$key]['content']=mb_substr($value['content'], 0, 20)." ...";
             }
         }
+
         $data['bboard']=$bboard;
         $data['title']="公告內容";
         $data['url']="bboards";
         $data['page']='index';
-        return view($data['url'].".index")->with('data',$data);
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -55,14 +64,10 @@ class BboardController extends Controller
             'content' => ['required', 'string', '', 'max:60000'],
             'status' => ['required'],
         ]);
-        $Bboard=Bboard::create([
-            'topic' => $request->topic,
-            'msg_date' => $request->msg_date,
-            'content' => $request->content,
-            'status' => $request->status,
-            'updated_at' => date("Y-m-d H:i:s"),
-            'modify_by' => Auth::user()->email,
-        ]);
+        $input = $request->except('_token');
+        $input['modify_by'] =  Auth::user()->email;
+        $data =$this->bboardRepository->addOne($input);
+
         return redirect()->route('bboards.index');
     }
 
@@ -75,12 +80,13 @@ class BboardController extends Controller
     public function show($id)
     {
         $data=[];
-        $bboard=Bboard::find($id)->toArray();
+        $bboard=$this->bboardRepository->getByID($id);
         $data['bboard']=$bboard;
         $data['title']="公告內容";
         $data['url']="bboards";
         $data['page']='show';
-        return view($data['url'].".show")->with('data', $data);
+
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -92,13 +98,13 @@ class BboardController extends Controller
     public function edit($id)
     {
         $data=[];
-        $bboard=Bboard::find($id)->toArray();
+        $bboard=$this->bboardRepository->getByID($id);
         $data['bboard']=$bboard;
         $data['title']="公告內容";
         $data['url']="bboards";
-        $data['page']='show';
-        return view($data['url'].".edit")->with('data', $data);
+        $data['page']='edit';
 
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -117,16 +123,10 @@ class BboardController extends Controller
             'status' => ['required'],
         ]);
         $input = $request->except('_token', '_method');
-        $data=Bboard::find($id);
-        $data->topic=$input['topic'];
-        $data->msg_date=$input['msg_date'];
-        $data->content=$input['content'];
-        $data->status=$input['status'];
-        $data->modify_by=Auth::user()->email;
-        $data->updated_at=date("Y-m-d H:i:s");
-        $data->save();
-        return redirect()->route('bboards.show', ['Bboard'=> $id]);
+        $input['modify_by']= Auth::user()->email;
+        $data=$this->bboardRepository->updateOne($input, $id);
 
+        return redirect()->route('bboards.show', ['Bboard'=> $id]);
     }
 
     /**
@@ -142,24 +142,21 @@ class BboardController extends Controller
     public function home()
     {
         $data=[];
-        $bboard=Bboard::where('status', 1)
-                        ->where('msg_date','<=',date('Y-m-d'))
-                        ->orderBy('msg_date', 'DESC')->paginate(10)->toArray();
+        $bboard=$this->bboardRepository->showAll(10);
         $data['bboard']=$bboard;
         $data['title']='公告';
         $data['url']='home';
         $data['page']='index';
-        return view($data['url'].".index")->with('data',$data);
+
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
-    public function showOff(Request $request,$id)
+    public function showOff(Request $request, $id)
     {
-
         $input = $request->except('_token', '_method');
-        $data=Bboard::find($id);
-        $data->status = $input['status'];
-        $data->save();
+        $input['modify_by']= Auth::user()->email;
+        $data=$this->bboardRepository->updateByField($input, $id );
+
         return redirect()->route('bboards.index');
     }
-
 }

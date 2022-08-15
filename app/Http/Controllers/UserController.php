@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Http\File;
+
+// use App\Models\User;
 use App\Models\Team;
 use App\Models\Role;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
+// use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -32,7 +34,7 @@ class UserController extends Controller
     public function index()
     {
         $data=[];
-        $users=User::paginate(15)->toArray();
+        $users=$this->userRepository->getAll(15);
         $teams=Team::get()->collect()->pluck('team', 'id')->all();
         $roles=Role::get()->toArray();
         $data['title']="使用者維護";
@@ -41,7 +43,8 @@ class UserController extends Controller
         $data['teams']=$teams;
         $data['roles']=$roles;
         $data['users']=$users;
-        return view($data['url'].".index")->with('data', $data);
+
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -62,32 +65,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //     $request->validate([
-        //         'name' => ['required', 'string', 'max:255'],
-        //         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        //         'tel' => ['nullable','numeric','between:8,10'],
-        //     ]);
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tel' => ['nullable','regex:/^([0-9\s\-\+\(\)]*)$/','min:8','max:10'],
+            'team' => ['required','numeric'],
+            'role' => ['required','numeric'],
+            'photofile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
+        ]);
         $input = $request->except('_token');
+        $input['password'] = Hash::make($request->password);
+        $input['modify_by']= Auth::user()->email;
         $file=$request->file('photofile');
-        // dd($input);
-        //     $photofile="";
-        //     if (!empty($file)) {
-        //         $photofile=$file->getClientOriginalName();
-        //         $request->photofile->storeAs('images', $photofile, 'public');
-        //     }
-        //     $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        //     'tel' => $request->tel,
-        //     'role' => $request->role,
-        //     'team' => $request->team,
-        //     'modify_by' => Auth::user()->email,
-        //     'modify_time' => date("Y-m-d H:i:s"),
-        //     'photofile' => $photofile,
-        //   ]);
-        //     event(new Registered($user));
+        if(!empty($file)){
+            $input['photofile'] = Storage::putFile('', new File($file));
+        }
         $data =$this->userRepository->addOne($input, $file);
 
         return redirect()->route('users.index');
@@ -102,7 +95,7 @@ class UserController extends Controller
     public function show($id)
     {
         $data=[];
-        $user=User::find($id)->toArray();
+        $user=$this->userRepository->getByID($id);
         $teams=Team::get()->collect()->pluck('team', 'id')->all();
         $roles=Role::get()->toArray();
         $data['user']=$user;
@@ -112,7 +105,8 @@ class UserController extends Controller
         $data['title']="使用者維護";
         $data['url']="users";
         $data['page']='show';
-        return view($data['url'].".show")->with('data', $data);
+
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -124,7 +118,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $data=[];
-        $user=User::find($id)->toArray();
+        $user=$this->userRepository->getByID($id);
         $teams=Team::get()->collect()->pluck('team', 'id')->all();
         $roles=Role::get()->toArray();
         $data['user']=$user;
@@ -134,8 +128,8 @@ class UserController extends Controller
         $data['title']='使用者維護';
         $data['url']="users";
         $data['page']='edit';
-        // $data=User::get()->toArray();
-        return view($data['url'].".edit")->with('data', $data);
+
+        return view($data['url'].".".$data['page'])->with('data', $data);
     }
 
     /**
@@ -150,30 +144,18 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'between:2,10'],
             'tel' => ['nullable','regex:/^([0-9\s\-\+\(\)]*)$/','min:8','max:10'],
+            'team' => ['required','numeric'],
+            'role' => ['required','numeric'],
+            'photofile' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
         ]);
         $input = $request->except('_token', '_method');
-        $data=User::find($id);
-        $data->name=$input['name'];
-        if ($data->email!=$input['email']) {
-            $request->validate([
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            ]);
-            $data->email=$input['email'];
-        } else {
-            unset($data->name);
-        }
-
-        $data->tel=$input['tel'];
-        $data->team=$input['team'];
-        $data->role=$input['role'];
-        $data->status=$input['status'];
-        $data->modify_by=Auth::user()->email;
+        $input['modify_by']= Auth::user()->email;
         $file=$request->file('photofile');
-        if (!empty($file)) {
-            $data->photofile=$file->getClientOriginalName();
-            $request->photofile->storeAs('images', $data->photofile, 'public');
+        if(!empty($file)){
+            $input['photofile'] = Storage::putFile('', new File($file));
         }
-        $data->save();
+        $data=$this->userRepository->updateOne($input, $id, $file);
+
         return redirect()->route('users.show', ['user'=> $id]);
     }
 

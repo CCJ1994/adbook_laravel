@@ -94,6 +94,8 @@
               <td>
                 @if ($user['status']!=0)
                 啟用
+                @else
+                停用
                 @endif
               </td>
               @if (Auth::user()->role == 13)

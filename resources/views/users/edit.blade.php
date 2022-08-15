@@ -66,7 +66,6 @@
                   啟用
                   @else
                   停用
-
                   @endif
                 </span>
               </li>
@@ -91,17 +90,17 @@
           </div><!-- /.card-header -->
           <div class="card-body">
             <div class="form-group row">
+              <label for="inputEmail" class="col-sm-2 col-form-label">信箱</label>
+              <div class="col-sm-10">
+                <input type="email" name="email" class="form-control" id="inputEmail"
+                  value="{{ $data['user']['email'] }}" placeholder="電子郵件" readonly>
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="inputName" class="col-sm-2 col-form-label">姓名</label>
               <div class="col-sm-10">
                 <input type="text" name="name" class="form-control" id="inputName" value="{{ $data['user']['name'] }}"
                   placeholder="姓名">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="inputEmail" class="col-sm-2 col-form-label">信箱</label>
-              <div class="col-sm-10">
-                <input type="email" name="email" class="form-control" id="inputEmail"
-                  value="{{ $data['user']['email'] }}" placeholder="電子郵件">
               </div>
             </div>
             <div class="form-group row">
