@@ -27,15 +27,7 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
-// Route::group(['middleware' => ['auth:web'], 'prefix' => 'dashboard'], function () {
-//     Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
-//     Route::resources([
-//         'bboards' => BboardController::class,
-//         'users' => UserController::class,
-//     ]);
-// });
-
-Route::group(['middleware' => ['auth:web']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
     Route::prefix('dashboard')->group(function () {
         Route::get('/showOff/{id}', [BboardController::class, 'showOff'])->name('bboards.showOff');

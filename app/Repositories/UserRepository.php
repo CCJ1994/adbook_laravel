@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use Illuminate\Http\File;
 
 class UserRepository
 {
@@ -14,7 +13,7 @@ class UserRepository
         $this->user =$user;
     }
 
-    public function getAll($pageinate)
+    public function getPageinate($pageinate)
     {
         $data = $this->user->paginate($pageinate)->toArray();
         return $data;
@@ -48,6 +47,7 @@ class UserRepository
 
     public function updateOne($input, $id, $file)
     {
+        // $data = $this->user::find($id)->update($input);
         $data = $this->user::find($id);
         $data->name = $input['name'];
         $data->tel = $input['tel'];

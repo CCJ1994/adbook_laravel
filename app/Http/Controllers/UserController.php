@@ -5,26 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\File;
 
-// use App\Models\User;
 use App\Models\Team;
 use App\Models\Role;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
 use App\Repositories\UserRepository;
+use App\Repositories\TeamRepository;
+use App\Repositories\RoleRepository;
 
 class UserController extends Controller
 {
     private $userRepository;
 
     public function __construct(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TeamRepository $teamRepository,
+        RoleRepository $roleRepository
     ) {
         $this->userRepository=$userRepository;
+        $this->teamRepository=$teamRepository;
+        $this->roleRepository=$roleRepository;
     }
     /**
      * Display a listing of the resource.
@@ -34,9 +38,9 @@ class UserController extends Controller
     public function index()
     {
         $data=[];
-        $users=$this->userRepository->getAll(15);
-        $teams=Team::get()->collect()->pluck('team', 'id')->all();
-        $roles=Role::get()->toArray();
+        $users=$this->userRepository->getPageinate(15);
+        $teams=$this->teamRepository->getPluck('id','team');
+        $roles=$this->roleRepository->getAll();
         $data['title']="使用者維護";
         $data['url']="users";
         $data['page']='index';
@@ -96,12 +100,12 @@ class UserController extends Controller
     {
         $data=[];
         $user=$this->userRepository->getByID($id);
-        $teams=Team::get()->collect()->pluck('team', 'id')->all();
-        $roles=Role::get()->toArray();
+        $teams=$this->teamRepository->getPluck('id','team');
+        $roles=$this->roleRepository->getAll();
         $data['user']=$user;
         $data['teams']=$teams;
         $data['roles']=$roles;
-        $data['role']=collect($roles)->pluck('role', 'id')->all()[$data['user']['role']];
+        $data['role']=$this->roleRepository->getByID($data['user']['role']);
         $data['title']="使用者維護";
         $data['url']="users";
         $data['page']='show';
@@ -119,12 +123,12 @@ class UserController extends Controller
     {
         $data=[];
         $user=$this->userRepository->getByID($id);
-        $teams=Team::get()->collect()->pluck('team', 'id')->all();
-        $roles=Role::get()->toArray();
+        $teams=$this->teamRepository->getPluck('id','team');
+        $roles=$this->roleRepository->getAll();
         $data['user']=$user;
         $data['teams']=$teams;
         $data['roles']=$roles;
-        $data['role']=collect($roles)->pluck('role', 'id')->all()[$data['user']['role']];
+        $data['role']=$this->roleRepository->getByID($data['user']['role']);
         $data['title']='使用者維護';
         $data['url']="users";
         $data['page']='edit';

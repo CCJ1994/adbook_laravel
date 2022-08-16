@@ -21,7 +21,7 @@ class BboardRepository
                     ->paginate($pageinate)->toArray();
         return $data;
     }
-    public function getAll($pageinate)
+    public function getPageinate($pageinate)
     {
         $data = $this->bboard->where('status', '<>', 0)->orderBy('msg_date', 'DESC')->paginate($pageinate)->toArray();
         return $data;

@@ -42,7 +42,6 @@ class RegisteredUserController extends Controller
             'role' => '',
             'team' => '',
             'modify_by' => '',
-            'modify_time' => date("Y-m-d H:i:s"),
             'tel' => '',
             'name' => $request->name,
             'email' => $request->email,

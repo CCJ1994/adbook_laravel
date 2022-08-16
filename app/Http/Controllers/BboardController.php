@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Bboard;
 use Illuminate\Support\Facades\Auth;
 
 use App\Repositories\BboardRepository;
+
+use App\Services\ArrayService;
 
 class BboardController extends Controller
 {
@@ -25,14 +26,10 @@ class BboardController extends Controller
     public function index()
     {
         $data=[];
-        $bboard=$this->bboardRepository->getAll(15);
+        $bboard=$this->bboardRepository->getPageinate(15);
 
-        foreach ($bboard['data'] as $key => $value) {
-            if (mb_strlen($value['content']) > 20) {
-                $bboard['data'][$key]['content']=mb_substr($value['content'], 0, 20)." ...";
-            }
-        }
-
+        $arrayService = new ArrayService();
+        $bboard['data'] = $arrayService->shortString($bboard['data'],'content');
         $data['bboard']=$bboard;
         $data['title']="公告內容";
         $data['url']="bboards";
