@@ -30,6 +30,7 @@ class CreateCustomersTable extends Migration
             $table->integer('status')->default(1)->comment('udn內部單位');
             $table->string('finance_cust_id')->nullable()->comment('財會代號');
             $table->dateTime('finance_upd_time')->nullable()->comment('和財會最後更新時間');
+            $table->string('modify_by');
             $table->timestamps();
         });
     }

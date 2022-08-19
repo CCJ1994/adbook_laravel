@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\BboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,15 +29,18 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth:web']], function () {
     Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
     Route::prefix('dashboard')->group(function () {
         Route::get('/showOff/{id}', [BboardController::class, 'showOff'])->name('bboards.showOff');
+        Route::post('/users/search', [UserController::class, 'search']);
         Route::resources([
             'bboards' => BboardController::class,
             'users' => UserController::class,
+            'customers' => CustomerController::class,
         ]);
     });
+
 });
 // Route::prefix('dashboard')->group(function () {
 //     Route::resources([

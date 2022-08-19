@@ -1,6 +1,8 @@
 <html>
+
 <head>
   @section('head')
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -17,6 +19,7 @@
   @show
   <title>@yield('title')</title>
 </head>
+
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
     @section('sidebar')
@@ -43,10 +46,17 @@
   <!-- overlayScrollbars -->
   <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
   <!-- AdminLTE App -->
-  <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+  <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
+  <script>
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  </script>
   @show
 
- 
+
 </body>
 
 </html>

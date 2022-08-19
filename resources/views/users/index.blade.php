@@ -20,6 +20,17 @@
         <div class="col-sm-6">
           <h1 class="m-0">{{ $data['title'] }}</h1>
         </div><!-- /.col -->
+        <!-- Search Form -->
+        <div class="col-sm-6">
+          <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control" type="search" placeholder="關鍵字搜尋">
+            <div class="border rounded input-group-append">
+              <button class="btn btn-sidebar">
+                <i class="fas fa-search fa-fw"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </div>
@@ -109,7 +120,9 @@
             </tr>
             @endforeach
             @else
-            <tr><td colspan="8">目前無使用者</td></tr>
+            <tr>
+              <td colspan="8">目前無使用者</td>
+            </tr>
             @endif
           </tbody>
         </table>
@@ -279,6 +292,32 @@ $(document).ready(function() {
       }));
     }
   });
+  // Example to toggle dropdown list of the search bar
+  //   $('[data-widget="sidebar-search"]').SidebarSearch('toggle');
+
+  // Example to initialize the plugin with options
+  //   let options = {
+  //     arrowSign: '/',
+  //     minLength: 2,
+  //     highlightClass: 'text-yellow',
+  //     notFoundText: 'No results'
+  //   };
+  // console.log($('[data-widget="sidebar-search"]'));
+  const searchIpt = $('[data-widget="sidebar-search"] input');
+  const searchBtn = $('[data-widget="sidebar-search"] .btn-sidebar');
+  $(searchBtn).click(function(){
+    search();
+  });
+  function search() {
+    let keyWord = $('[data-widget="sidebar-search"] input').val();
+
+    $.post('/dashboard/users/search', {
+        'keyWord':keyWord,
+      }).then(function(response) {
+        console.log(response);
+      });
+  }
+
 });
 
 var Toast = Swal.mixin({

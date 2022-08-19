@@ -28,7 +28,7 @@
     <!-- Default box -->
     <div class="card h-100">
       <div class="card-header d-flex align-items-center">
-        <h3 class="card-title">公告內容清單</h3>
+        <h3 class="card-title">客戶清單</h3>
         <!-- Button trigger modal -->
         <button class="ml-2 btn btn-info btn-sm" data-toggle="modal" data-target="#addModal">
           新增
@@ -39,40 +39,23 @@
         <table class="table text-center table-striped">
           <thead>
             <tr>
-              <th>公告主題</th>
-              <th>公告內容</th>
-              <th>公告時間</th>
-              <th>編輯者</th>
-              <th></th>
+              <th>公司名稱</th>
+              <th class="col-2">聯絡人</th>
+              <th class="col-1"></th>
             </tr>
           </thead>
           <tbody>
-            @if ( !empty($data['bboard']['data']) )
-            @foreach ( $data['bboard']['data'] as $bboard)
-            @if ($bboard['id']!=0)
+            @if ( !empty($data['customers']['data']) )
+            @foreach ( $data['customers']['data'] as $customer)
+            @if ($customer['id']!=0)
             <tr>
-              <td class="align-middle">{{ $bboard['topic'] }}</td>
-              <td class="align-middle">{{ $bboard['content'] }}</td>
-              <td class="align-middle">{{ $bboard['msg_date'] }}</td>
-              <td class="align-middle">{{ $bboard['modify_by'] }}</td>
+              <td class="text-left align-middle">{{ $customer['name'] }}</td>
+              <td class="align-middle">{{ $customer['contact'] }}</td>
               <td class="align-middle">
-                <a class="btn btn-primary btn-sm" href="{{ route('bboards.show',['bboard'=>$bboard['id']]) }}">
+                <a class="btn btn-primary btn-sm" href="{{ route('customers.show',['customer'=>$customer['id']]) }}">
                   編輯
                   <i class="fas fa-pencil-alt"></i>
                 </a>
-                @if ($bboard['status']==1)
-                <a class="btn btn-danger btn-sm"
-                  href="{{ route('bboards.showOff',['id'=>$bboard['id'],'status'=> 2 ]) }}">
-                  隱藏
-                  <i class="fas fa-eye-slash"></i>
-                </a>
-                @else
-                <a class="btn btn-success btn-sm"
-                  href="{{ route('bboards.showOff',['id'=>$bboard['id'],'status'=> 1 ]) }}">
-                  顯示
-                  <i class="fas fa-eye"></i>
-                </a>
-                @endif
               </td>
             </tr>
             @endif
@@ -87,10 +70,10 @@
       </div>
       <!-- /.card-body -->
       <!-- pagination -->
-      @if (!empty($data['bboard']['data']))
+      @if (!empty($data['customers']['data']))
       <div class="card-tools">
         <ul class="mt-3 pagination pagination-sm justify-content-center">
-          @foreach ($data['bboard']['links'] as $page)
+          @foreach ($data['customers']['links'] as $page)
           @if ( $page['label']=='pagination.previous' && !empty($page['url']) )
           <li class="page-item"><a href="{{ $page['url'] }}" class="page-link">&laquo;</a></li>
           @elseif ( $page['label']=='pagination.next' && !empty($page['url']) )

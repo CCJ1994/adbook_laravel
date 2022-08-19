@@ -10,32 +10,22 @@
     @if ($menu['menu_id']==0)
     @if ( $menu['id'] != 1)
     <li class="nav-item d-none d-sm-inline-block dropdown dropdown-hover">
-      @if ( $menu['id'] == $menus[$data['url']]['menu_id'])
-
-      <a class="nav-link active" data-toggle="dropdown">{{$menu['title']}}</a>
-      @else
-      <a class="nav-link" data-toggle="dropdown">{{$menu['title']}}</a>
-      @endif
+      <a class="nav-link {{  $menu['id'] == $menus[$data['url']]['menu_id'] ? 'active' : '' }} "
+        data-toggle="dropdown">{{ $menu['title'] }}</a>
       <ul class="border-0 shadow dropdown-menu">
         @foreach ( $menus as $subMenu)
         @if ( $subMenu['menu_id'] == $menu['id'])
         <li>
-          <a href="" class="dropdown-item">{{$subMenu['title']}}</a>
+          <a href="" class="dropdown-item">{{ $subMenu['title'] }}</a>
         </li>
         @endif
         @endforeach
       </ul>
     </li>
     @else
-    @if ( $menus[$data['url']]['menu_id']==0)
-    <li class="nav-item d-none d-sm-inline-block active">
+    <li class="nav-item d-none d-sm-inline-block {{ $menus[$data['url']]['menu_id']==0 ? 'active' :'' }} ">
       <a href=" {{ route('dashboard.home') }}" class="nav-link">{{$menu['title']}}</a>
     </li>
-    @else
-    <li class="nav-item d-none d-sm-inline-block">
-      <a href=" {{ route('dashboard.home') }}" class="nav-link">{{$menu['title']}}</a>
-    </li>
-    @endif
 
     @endif
 
@@ -112,25 +102,20 @@
     <!-- Sidebar user panel (optional) -->
     <div class="pb-3 mt-3 mb-3 user-panel d-flex">
       <div class="image">
-        @if (!empty(Auth::user()->photofile))
 
-        <img src="{{ asset('/storage/images/'.Auth::user()->photofile) }}" class="img-circle elevation-2"
-          alt="User Image">
-        @else
 
-        <img src="{{ asset('assets/dist/img/user4-128x128.jpg') }}" class="img-circle elevation-2" alt="User Image">
-        @endif
+        <img
+          src="{{ !empty(Auth::user()->photofile) ? asset('/storage/images/'.Auth::user()->photofile) : asset('assets/dist/img/user4-128x128.jpg') }}"
+          class="img-circle elevation-2" alt="User Image">
 
       </div>
       <div class="info">
-        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+        <a href="" class="d-block">{{ Auth::user()->name }}</a>
       </div>
     </div>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
         @foreach ( $menus as $key => $mainMenu)
         @if ($mainMenu['menu_id']==0 && $mainMenu['id']!=1)
         @if ($mainMenu['id']==$menus[$data['url']]['menu_id'])
@@ -142,23 +127,14 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-
           <ul class="nav nav-treeview">
             @foreach ( $menus as $subMenu )
             @if ( $subMenu['menu_id']==$mainMenu['id'] )
             <li class="nav-item">
-              @if ( $subMenu['url'] == $menus[$data['url']]['url'] )
-              <a href="" class="nav-link active">
+              <a href=" {{ route($subMenu['url'].'.index') }} " class="nav-link {{ $subMenu['url'] == $menus[$data['url']]['url'] ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{ $subMenu['title'] }}</p>
               </a>
-              @else
-              <a href="{{ route($subMenu['url'].'.index') }}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>{{ $subMenu['title'] }}</p>
-              </a>
-              @endif
-
             </li>
             @endif
             @endforeach
@@ -178,48 +154,24 @@
             @foreach ( $menus as $subMenu )
             @if ( $subMenu['menu_id']==$mainMenu['id'] )
             <li class="nav-item">
-              @if ( $subMenu['url'] == $menus[$data['url']]['url'] )
-              <a href="" class="nav-link active">
+              <a href=" {{ url('dashboard/'.$subMenu['url']) }} " class="nav-link {{ $subMenu['url'] == $menus[$data['url']]['url'] ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>{{ $subMenu['title'] }}</p>
+                <p> {{ $subMenu['title'] }} </p>
               </a>
-              @else
-              <a href="" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>{{ $subMenu['title'] }}</p>
-              </a>
-              @endif
-
             </li>
             @endif
             @endforeach
           </ul>
         </li>
         @endif
-
-        @elseif ( $mainMenu['id']==1 )
-        @if ( $menus[$data['url']]['url']=='home' )
+        @elseif ( $mainMenu['id']==1 )  <!-- 公告 -->
         <li class="nav-item menu-open">
-          <a href="{{ url('dashboard') }}" class="nav-link active">
+          <a href="{{ url('dashboard') }}" class="nav-link {{ $menus[$data['url']]['url']=='home' ? 'active' : '' }}">
             <i class="nav-icon fas fa-home"></i>
-            <p>
-              {{$mainMenu['title']}}
-            </p>
-          </a>
-        </li>
-        @else
-        <li class="nav-item">
-          <a href="{{ url('dashboard') }}" class="nav-link">
-            <i class="nav-icon fas fa-home"></i>
-            <p>
-              {{$mainMenu['title']}}
-            </p>
+            <p> {{$mainMenu['title']}} </p>
           </a>
         </li>
         @endif
-
-        @endif
-
         @endforeach
       </ul>
     </nav>
