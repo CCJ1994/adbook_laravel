@@ -176,6 +176,15 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        return $request;
+        $search_id=$this->userRepository->keyWord($request);
+        $data=[];
+        if(!empty($search_id)){
+            $result =$this->userRepository->getByID($search_id);
+            foreach ($result as $key => $value) {
+                $data[$key]['id']=$value['id'];
+                $data[$key]['name']=$value['name'];
+            }
+        }
+        return $data;
     }
 }

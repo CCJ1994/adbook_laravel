@@ -22,12 +22,23 @@
         </div><!-- /.col -->
         <!-- Search Form -->
         <div class="col-sm-6">
-          <div class="input-group" data-widget="sidebar-search">
-            <input class="form-control" type="search" placeholder="關鍵字搜尋">
-            <div class="border rounded input-group-append">
-              <button class="btn btn-sidebar">
-                <i class="fas fa-search fa-fw"></i>
+          <div id="users_search" class="input-group">
+            <input type="search" class="form-control" placeholder="輸入關鍵字">
+            <div class="input-group-append">
+              <button id="search_btn" type="button" class="btn btn-default">
+                <i class="fa fa-search"></i>
               </button>
+            </div>
+          </div>
+          <div class="sidebar-search-results" style="z-index:5;">
+            <div class="list-group">
+              <div id="result-item" class="overflow-auto" style="max-height:500px;">
+                <div id="loading" class="text-center list-group-item d-none">
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -249,6 +260,7 @@
 @parent
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/dist/js/adbook.js') }}"></script>
 <script>
 var teamsAry = <?=json_encode($data['teams']);?>;
 var rolesAry = <?=json_encode($data['roles']);?>;
@@ -292,34 +304,33 @@ $(document).ready(function() {
       }));
     }
   });
-  // Example to toggle dropdown list of the search bar
-  //   $('[data-widget="sidebar-search"]').SidebarSearch('toggle');
 
-  // Example to initialize the plugin with options
-  //   let options = {
-  //     arrowSign: '/',
-  //     minLength: 2,
-  //     highlightClass: 'text-yellow',
-  //     notFoundText: 'No results'
-  //   };
-  // console.log($('[data-widget="sidebar-search"]'));
-  const searchIpt = $('[data-widget="sidebar-search"] input');
-  const searchBtn = $('[data-widget="sidebar-search"] .btn-sidebar');
-  $(searchBtn).click(function(){
-    search();
+  const searchIpt = $('#users_search input');
+  const searchBtn = $('#search_btn');
+  const searchPath = 'users';
+  $(searchBtn).click(function() {
+    if (searchBtn.find("i").hasClass("fa-times")) {
+      searchBtn.html('<i class="fa fa-search"></i>');
+      $('.sidebar-search-results').hide();
+      $('#loading').hide();
+      searchIpt.val('');
+    } else {
+      search(searchPath);
+    }
   });
-  function search() {
-    let keyWord = $('[data-widget="sidebar-search"] input').val();
-
-    $.post('/dashboard/users/search', {
-        'keyWord':keyWord,
-      }).then(function(response) {
-        console.log(response);
-      });
-  }
+  $(searchIpt).keyup(function(event) {
+    if (event.keyCode == 13) {
+      search(searchPath);
+    } else if (searchIpt.val() == "") {
+      $(".sidebar-search-results .list-group").html(
+        '<div id="loading" class="text-center list-group-item d-none"> <div class = "spinner-border" role = "status" ><span class = "visually-hidden"> </span> </div> </div>'
+      );
+    } else {
+      searchBtn.html('<i class="fa fa-search"></i>');
+    }
+  });
 
 });
-
 var Toast = Swal.mixin({
   toast: true,
   position: 'top-end',

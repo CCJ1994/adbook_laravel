@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
+
 
 class UserRepository
 {
@@ -21,7 +23,16 @@ class UserRepository
 
     public function getByID($id)
     {
-        $data = $this->user->where('id', $id)->first()->toArray();
+        $data=[];
+        if(is_array($id)){
+            if(!empty($id)){
+                foreach ($id as $key => $value) {
+                    $data[] = $this->user->where('id', $value)->first()->toArray();
+                }
+            }
+        }else{
+            $data = $this->user->where('id', $id)->first()->toArray();
+        }
 
         return $data;
     }
@@ -61,6 +72,28 @@ class UserRepository
         }
         $data->save();
         return $data;
+    }
+    public function keyWord($input)
+    {
+        $keyWordAry=[];
+        $resultAry=[];
+        if(!empty($input->keyWord)){
+            $keyWordAry = array_filter(explode(" ",$input->keyWord));
+            $users_id=[];
+            foreach ($keyWordAry as $key => $value) {
+                $data = $this->user
+                ->where('name','like', '%'.$value.'%')
+                ->orWhere('email','like', '%'.$value.'%')->get(['id']);
+                foreach ($data as $key => $value) {
+                    if(!in_array($value->id,$users_id)){
+                        $users_id[]=$value->id;
+                    }
+                }
+            }
+            return $users_id;
+        }else{
+            return;
+        }
     }
 
     public function delByID($user_id)

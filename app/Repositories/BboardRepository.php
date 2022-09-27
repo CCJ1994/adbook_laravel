@@ -29,8 +29,16 @@ class BboardRepository
 
     public function getByID($id)
     {
-        $data = $this->bboard->where('id', $id)->first()->toArray();
-
+        $data=[];
+        if(is_array($id)){
+            if(!empty($id)){
+                foreach ($id as $key => $value) {
+                    $data[] = $this->bboard->where('id', $id)->first()->toArray();
+                }
+            }
+        }else{
+            $data = $this->bboard->where('id', $id)->first()->toArray();
+        }
         return $data;
     }
 
@@ -65,6 +73,29 @@ class BboardRepository
         }
         $data->save();
         return $data;
+    }
+    public function keyWord($input)
+    {
+        $keyWordAry=[];
+        $resultAry=[];
+        if(!empty($input->keyWord)){
+            $keyWordAry = array_filter(explode(" ",$input->keyWord));
+            $bboard_id=[];
+            foreach ($keyWordAry as $key => $value) {
+                $data = $this->bboard
+                ->where('topic','like', '%'.$value.'%')
+                ->orWhere('content','like', '%'.$value.'%')
+                ->orWhere('msg_date','like', '%'.$value.'%')->get(['id']);
+                foreach ($data as $key => $value) {
+                    if(!in_array($value->id,$bboard_id)){
+                        $bboard_id[]=$value->id;
+                    }
+                }
+            }
+            return $bboard_id;
+        }else{
+            return;
+        }
     }
     public function delByID($bboard_id)
     {

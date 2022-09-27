@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('/dashboard', [BboardController::class, 'home'])->name('dashboard.home');
     Route::prefix('dashboard')->group(function () {
         Route::get('/showOff/{id}', [BboardController::class, 'showOff'])->name('bboards.showOff');
+        Route::post('/bboards/search', [BboardController::class, 'search']);
         Route::post('/users/search', [UserController::class, 'search']);
         Route::resources([
             'bboards' => BboardController::class,

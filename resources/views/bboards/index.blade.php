@@ -16,9 +16,33 @@
   <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
-      <div class="mb-2">
-        <h1>{{ $data['title'] }}</h1>
-      </div>
+      <div class="mb-2 row">
+        <div class="col-sm-6">
+          <h1 class="m-0">{{ $data['title'] }}</h1>
+        </div><!-- /.col -->
+        <!-- Search Form -->
+        <div class="col-sm-6">
+          <div id="bboards_search" class="input-group">
+            <input type="search" class="form-control" placeholder="輸入關鍵字">
+            <div class="input-group-append">
+              <button id="search_btn" type="button" class="btn btn-default">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+          <div class="sidebar-search-results" style="z-index:5;">
+            <div class="list-group">
+              <div id="result-item" class="overflow-auto" style="max-height:500px;">
+                <div id="loading" class="text-center list-group-item d-none">
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </div>
 
@@ -160,7 +184,32 @@
 @parent
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/dist/js/adbook.js') }}"></script>
 <script>
+const searchIpt = $('#bboards_search input');
+const searchBtn = $('#search_btn');
+const searchPath = 'bboards';
+$(searchBtn).click(function() {
+  if (searchBtn.find("i").hasClass("fa-times")) {
+    searchBtn.html('<i class="fa fa-search"></i>');
+    $('.sidebar-search-results').hide();
+    $('#loading').hide();
+    searchIpt.val('');
+  } else {
+    search(searchPath);
+  }
+});
+$(searchIpt).keyup(function(event) {
+  if (event.keyCode == 13) {
+    search(searchPath);
+  } else if (searchIpt.val() == "") {
+    $(".sidebar-search-results .list-group").html(
+      '<div id="loading" class="text-center list-group-item d-none"> <div class = "spinner-border" role = "status" ><span class = "visually-hidden"> </span> </div> </div>'
+    );
+  } else {
+    searchBtn.html('<i class="fa fa-search"></i>');
+  }
+});
 var Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -180,7 +229,7 @@ if (hasErr) {
   Toast.fire({
     icon: 'error',
     title: errStr
-  })
+  });
 }
 </script>
 @endsection

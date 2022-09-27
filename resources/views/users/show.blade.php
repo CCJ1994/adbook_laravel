@@ -8,7 +8,6 @@
 @section('title', $data['title'])
 
 @section('content')
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper kanban">
   <!-- Content Header (Page header) -->
@@ -56,8 +55,9 @@
               <li class="list-group-item">
                 <b>職稱</b>
                 <span class="float-right">
-                  {{ $data['role'] }}
+                  {{ $data['role']['role'] }}
                 </span>
+
               </li>
               <li class="list-group-item">
                 <b>狀態</b>

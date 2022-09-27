@@ -156,4 +156,17 @@ class BboardController extends Controller
 
         return redirect()->route('bboards.index');
     }
+    public function search(Request $request)
+    {
+        $search_id=$this->bboardRepository->keyWord($request);
+        $data=[];
+        if(!empty($search_id)){
+            $result =$this->bboardRepository->getByID($search_id);
+            foreach ($result as $key => $value) {
+                $data[$key]['id']=$value['id'];
+                $data[$key]['name']=$value['topic'];
+            }
+        }
+        return $data;
+    }
 }
